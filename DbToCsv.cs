@@ -1,18 +1,24 @@
         //Creates CSV from Stored Procedure
+
+        private const logFolder = "example\path\folder";
+        private const destinationFolder = "example\path\folder";
+        private const storedProc = "dbo.ExampleProc";
+        private const fileName = "exampleFileName";
+        private const connectionString = "exampleConnectionString";
         public void CreateCsv()
         {
             string datetime = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string LogFolder = @"C:\SF.Code\C25\Sabio.Web\SampleData";
+            string LogFolder = logFolder;
             try
             {
-                string FileNamePart = "Geocodes";
-                string DestinationFolder = @"C:\SF.Code\C25\Sabio.Web\SampleData";
-                string StoredProcedure = "dbo.Listings_SelectAddressForGeocode";
+                string FileNamePart = fileName;
+                string DestinationFolder = destinationFolder;
+                string StoredProcedure = storedProc;
                 string FileDelimiter = ",";
                 string FileExtension = ".csv";
 
                 SqlConnection SQLConnection = new SqlConnection();
-                SQLConnection.ConnectionString = "Data Source=sabiodata4.cdzsexgreyji.us-west-2.rds.amazonaws.com;Database=C25;User Id=C25_User;Password=Sabiopass1!;";
+                SQLConnection.ConnectionString = connectionString;
 
                 string query = "EXEC " + StoredProcedure;
                 SqlCommand cmd = new SqlCommand(query, SQLConnection);
