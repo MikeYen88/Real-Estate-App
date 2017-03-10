@@ -1,7 +1,12 @@
+//Califronia Bureau of Real Estate
+private const string licenseUrl = "http://www2.dre.ca.gov/PublicASP/";
 
 public LicenseInfo grabData(string licenseNumber)
         {
-            string url = "http://www2.dre.ca.gov/PublicASP/";
+            string url = licenseUrl;
+            string agent = "SALESPERSON";
+            string broker = "BROKER";
+            string office = "CORPORATION;
             if (licenseNumber.Length == 8)
             {
                 url += "pplinfo.asp?License_id=" + licenseNumber;
@@ -16,13 +21,13 @@ public LicenseInfo grabData(string licenseNumber)
                 var cell = rows[0].SelectNodes(".//td");
                 switch (cell[1].InnerText)
                 {
-                    case "SALESPERSON":
+                    case agent:
                         AgentMapper(license, rows);
                         break;
-                    case "BROKER":
+                    case broker:
                         BrokerMapper(license, rows);
                         break;
-                    case "CORPORATION":
+                    case office:
                         OfficeMapper(license, rows);
                         break;
                 }
@@ -221,7 +226,7 @@ public LicenseInfo grabData(string licenseNumber)
 
         private static List<string> ExtractAgents(string agentsPage)
         {
-            string url = "http://www2.dre.ca.gov/PublicASP/" + agentsPage;
+            string url = licenseUrl + agentsPage;
             HtmlWeb web = new HtmlWeb();
             HtmlDocument html = web.Load(url);
             LicenseInfo license = new LicenseInfo();
