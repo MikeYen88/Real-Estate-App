@@ -15,8 +15,6 @@
 
 
 
-        //private static CredentialCache _credentialCache = null;
-
         private static RetsSession _libretsSession = null;
 
         // This attempts to use the Librets C++ library from a GitHub Repo
@@ -571,56 +569,3 @@
 }
 
 
-
-//GetByListingId is formated based on this
-//public static string LibretsSearch(string query)//id
-//{
-//    List<List<string>> resultArrays = new List<List<string>>();
-//    if (_libretsSession == null)
-//    {
-//        if (!LibretsLogin())
-//        {
-//            throw new ApplicationException("Librets login failed");
-//        }
-//    }
-//    try
-//    {
-//        SearchRequest req = CreateSearchRequest(query);
-//        SearchResultSet results = _libretsSession.Search(req);
-
-//        Debug.WriteLine("Record count: " + results.GetCount());
-//        IEnumerable columns = results.GetColumns();
-//        while (results.HasNext())
-//        {
-//            List<string> rowData = new List<string>();
-//            foreach (string column in columns)
-//            {
-//                rowData.Add(results.GetString(column));
-//            }
-//            resultArrays.Add(rowData);
-//        }
-//        return JsonConvert.SerializeObject(resultArrays);
-//    }
-//    catch (Exception ex)
-//    {
-//        throw new ApplicationException(ex.Message, ex);
-//    }
-//}
-
-
-
-
-//public static SearchRequest CreateSearchRequest(string query)
-//{
-//    if (!String.IsNullOrWhiteSpace(query))
-//    {
-//        //query = "(City=|ALH,MP,SGAB),(ListPrice=750000-)";
-//        query = "(City=|ALH),(ListPrice=750000-)";
-//    }
-// public SearchRequest CreateSearchRequest(string searchType, string searchClass, string query);
-//    var request = _libretsSession.CreateSearchRequest("Property",
-//        "Residential",
-//        query);
-//    request.SetSelect(String.Join(",", CrmlsSelectColumns));
-
-//    return request;
