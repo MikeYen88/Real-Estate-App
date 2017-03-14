@@ -1,24 +1,6 @@
-﻿using librets;
-using Newtonsoft.Json;
-using Sabio.Data;
-using Sabio.Web.Domain;
-using Sabio.Web.Models.Requests;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Web;
 
-namespace Sabio.Web.Services
-{
-    public class ListingService : BaseService, IListingService
-    {
-        private const string CrmlsUserName = "DANTUTOLO";
-        private const string CrmlsPassword = "4t5vMc^t";
+        private const string CrmlsUserName = "UserName";
+        private const string CrmlsPassword = "PassWord";
         private const string CrmlsDomain = "https://pt.rets.crmls.org";
         private const string CrmlsLoginRoute = "/contact/rets/login";
         private const string CrmlsLogoutRoute = "/contact/rets/logout";
