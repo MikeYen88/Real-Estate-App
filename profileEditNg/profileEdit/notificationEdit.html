@@ -1,0 +1,153 @@
+﻿<form name="dashboard.notForm" ng-submit="dashboard.submit('notForm', true)" novalidate>
+    <div class="sky-form">
+
+        <table class="table table-bordered table-striped">
+
+            <tbody>
+                <tr>
+                    <td><strong>Cases</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Invite / Edit </td>
+                    <td>
+                        <div class="inline-group">
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.caseInvite.emailNotif"><i></i> E-Mail
+                            </label>
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.caseInvite.smsNotif"><i></i> SMS
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Searches</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Saved Searches New Listings</td>
+                    <td>
+                        <div class="inline-group">
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.newListingOnSavedSearch.emailNotif"><i></i> E-Mail
+                            </label>
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.newListingOnSavedSearch.smsNotif"><i></i> SMS
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Notes</td>
+                    <td>
+                        <div class="inline-group">
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.notesAddedToListing.emailNotif"><i></i> E-Mail
+                            </label>
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.notesAddedToListing.smsNotif"><i></i> SMS
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Messages</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>New Message</td>
+                    <td>
+                        <div class="inline-group">
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.newMessage.emailNotif"><i></i> E-Mail
+                            </label>
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.newMessage.smsNotif"><i></i> SMS
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Expenses</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Reminders</td>
+                    <td>
+                        <div class="inline-group">
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.expensesReminder.emailNotif"><i></i> E-Mail
+                            </label>
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.expensesReminder.smsNotif"><i></i> SMS
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Transactions</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>People Add/Edit</td>
+                    <td>
+                        <div class="inline-group">
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.transactionParticipants.emailNotif"><i></i> E-Mail
+                            </label>
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.transactionParticipants.smsNotif"><i></i> SMS
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Documents Add/Edit</td>
+                    <td>
+                        <div class="inline-group">
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.transactionDocuments.emailNotif"><i></i> E-Mail
+                            </label>
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.transactionDocuments.smsNotif"><i></i> SMS
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Document Reminders</td>
+                    <td>
+                        <div class="inline-group">
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.transactionDocumentReminders.emailNotif"><i></i> E-Mail
+                            </label>
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.transactionDocumentReminders.smsNotif"><i></i> SMS
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Comments</td>
+                    <td>
+                        <div class="inline-group">
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.transactionComments.emailNotif"><i></i> E-Mail
+                            </label>
+                            <label class="checkbox nomargin-top nomargin-bottom">
+                                <input type="checkbox" ng-model="dashboard.notif.transactionComments.smsNotif"><i></i> SMS
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="margin-top-10">
+        <button class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+    </div>
+
+</form>
