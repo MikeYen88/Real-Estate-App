@@ -1,0 +1,1140 @@
+﻿@model Sabio.Web.Models.ViewModels.BaseViewModel
+@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Views/Shared/_LayoutSmarty.cshtml";
+}
+
+<base href="/" />
+<link href="~/Content/ngCropper.all.css" rel="stylesheet" />
+
+<style>
+    .img-container {
+        max-width: 300px;
+    }
+
+
+    .title {
+        opacity: 0;
+        transition: opacity .5s ease-in;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0,0,0,.5);
+        position: relative;
+        top: 0;
+        text-align: center;
+        display: table;
+    }
+
+        .title span {
+            display: table-cell;
+            vertical-align: bottom;
+            height: 100%;
+            width: 100%;
+        }
+
+    .thumbnail:hover .title {
+        opacity: 1;
+    }
+</style>
+
+<div class="container" ng-controller="personController as dashboard">
+    <section class="page-header page-header-xs">
+        <div class="container">
+
+            <!-- breadcrumbs -->
+            <ol class="breadcrumb breadcrumb-inverse">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Pages</a></li>
+                <li class="active">{{dashboard.item.firstName}} {{dashboard.item.lastName}}</li>
+            </ol><!-- /breadcrumbs -->
+
+        </div>
+    </section>
+    <section>
+        <div class="container">
+
+            <!-- RIGHT -->
+            <div class="col-lg-9 col-md-9 col-sm-8 col-lg-push-3 col-md-push-3 col-sm-push-4 margin-bottom-80">
+
+                <uib-tabset class="tab-content margin-top-20">
+
+                    <!-- PERSONAL INFO TAB -->
+                    <uib-tab index="0" id="info" heading="Personal Info">
+                        <profile-edit person-id={{dashboard.personId}}></profile-edit>
+                        @*<form role="form" name="dashboard.userForm" ng-submit="dashboard.submit('userForm', dashboard.userForm.$valid)" novalidate>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.userForm.firstName.$invalid && !dashboard.userForm.firstName.$pristine }">
+                                    <label class="control-label">First Name</label>
+                                    <input type="text"
+                                           name="firstName"
+                                           class="form-control"
+                                           ng-model="dashboard.item.firstName"
+                                           ng-minlength="2"
+                                           ng-maxlength="50">
+                                    <p ng-show="!dashboard.userForm.firstName.$pristine && dashboard.userForm.firstName.$error.minlength" class="help-block">Last Name is too short</p>
+                                    <p ng-show="!dashboard.userForm.firstName.$pristine && dashboard.userForm.firstName.$error.maxlength" class="help-block">First Name is too long.</p>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.userForm.lastName.$invalid && !dashboard.userForm.lastName.$pristine }">
+                                    <label class="control-label">Last Name</label>
+                                    <input type="text"
+                                           name="lastName"
+                                           class='form-control'
+                                           ng-model="dashboard.item.lastName"
+                                           ng-minlength="2"
+                                           ng-maxlength="50">
+                                    <p ng-show="!dashboard.userForm.lastName.$pristine && dashboard.userForm.lastName.$error.minlength" class="help-block">Last Name is too short</p>
+                                    <p ng-show="!dashboard.userForm.lastName.$pristine && dashboard.userForm.lastName.$error.maxlength" class="help-block">First Name is too long.</p>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.userForm.phoneCell.$invalid && !dashboard.userForm.phoneCell.$pristine }">
+                                    <label class="control-label">Cell Number</label>
+                                    <input type="text"
+                                           name="phoneCell"
+                                           ng-model="dashboard.item.phoneCell"
+                                           ng-minlength="10"
+                                           ng-maxlength="14"
+                                           phone-input
+                                           class="form-control input-phone">
+                                    <p ng-show="dashboard.userForm.phoneCell.$error.minlength" class="help-block">Phone Number is too short</p>
+                                    <p ng-show="dashboard.userForm.phoneCell.$error.maxlength" class="help-block">Phone Number is too long.</p>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.userForm.phoneHome.$invalid && !dashboard.userForm.phoneHome.$pristine }">
+                                    <label class="control-label">Home Number</label>
+                                    <input type="text"
+                                           name="phoneHome"
+                                           ng-model="dashboard.item.phoneHome"
+                                           ng-minlength="10"
+                                           ng-maxlength="14"
+                                           phone-input
+                                           class="form-control input-phone">
+                                    <p ng-show="dashboard.userForm.phoneHome.$error.minlength" class="help-block">Phone Number is too short</p>
+                                    <p ng-show="dashboard.userForm.phoneHome.$error.maxlength" class="help-block">Phone Number is too long.</p>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : userForm.phoneWork.$invalid && !userForm.phoneWork.$pristine }">
+                                    <label class="control-label">Work Number</label>
+                                    <input type="text"
+                                           name="phoneWork"
+                                           ng-model="dashboard.item.phoneWork"
+                                           ng-minlength="10"
+                                           ng-maxlength="14"
+                                           class="form-control input-phone"
+                                           phone-input>
+                                    <p ng-show="dashboard.userForm.phoneWork.$error.minlength" class="help-block">Phone Number is too short</p>
+                                    <p ng-show="dashboard.userForm.phoneWork.$error.maxlength" class="help-block">Phone Number is too long.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Address 1</label>
+                                    <input type="text"
+                                           name="address1"
+                                           ng-model="dashboard.item.address1"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Address 2</label>
+                                    <input type="text"
+                                           name="address2"
+                                           ng-model="dashboard.item.address2"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">City</label>
+                                    <input type="text"
+                                           name="city"
+                                           ng-model="dashboard.item.city"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">State</label>
+                                    <select type="text"
+                                            name="stateProvince"
+                                            ng-model="dashboard.item.stateProvince"
+                                            class="form-control">
+                                        <option value="AL">Alabama</option>
+                                        <option value="AK">Alaska</option>
+                                        <option value="AZ">Arizona</option>
+                                        <option value="AR">Arkansas</option>
+                                        <option value="CA">California</option>
+                                        <option value="CO">Colorado</option>
+                                        <option value="CT">Connecticut</option>
+                                        <option value="DE">Delaware</option>
+                                        <option value="DC">District Of Columbia</option>
+                                        <option value="FL">Florida</option>
+                                        <option value="GA">Georgia</option>
+                                        <option value="HI">Hawaii</option>
+                                        <option value="ID">Idaho</option>
+                                        <option value="IL">Illinois</option>
+                                        <option value="IN">Indiana</option>
+                                        <option value="IA">Iowa</option>
+                                        <option value="KS">Kansas</option>
+                                        <option value="KY">Kentucky</option>
+                                        <option value="LA">Louisiana</option>
+                                        <option value="ME">Maine</option>
+                                        <option value="MD">Maryland</option>
+                                        <option value="MA">Massachusetts</option>
+                                        <option value="MI">Michigan</option>
+                                        <option value="MN">Minnesota</option>
+                                        <option value="MS">Mississippi</option>
+                                        <option value="MO">Missouri</option>
+                                        <option value="MT">Montana</option>
+                                        <option value="NE">Nebraska</option>
+                                        <option value="NV">Nevada</option>
+                                        <option value="NH">New Hampshire</option>
+                                        <option value="NJ">New Jersey</option>
+                                        <option value="NM">New Mexico</option>
+                                        <option value="NY">New York</option>
+                                        <option value="NC">North Carolina</option>
+                                        <option value="ND">North Dakota</option>
+                                        <option value="OH">Ohio</option>
+                                        <option value="OK">Oklahoma</option>
+                                        <option value="OR">Oregon</option>
+                                        <option value="PA">Pennsylvania</option>
+                                        <option value="RI">Rhode Island</option>
+                                        <option value="SC">South Carolina</option>
+                                        <option value="SD">South Dakota</option>
+                                        <option value="TN">Tennessee</option>
+                                        <option value="TX">Texas</option>
+                                        <option value="UT">Utah</option>
+                                        <option value="VT">Vermont</option>
+                                        <option value="VA">Virginia</option>
+                                        <option value="WA">Washington</option>
+                                        <option value="WV">West Virginia</option>
+                                        <option value="WI">Wisconsin</option>
+                                        <option value="WY">Wyoming</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Zip Code</label>
+                                    <input type="text"
+                                           name="zipCode"
+                                           ng-model="dashboard.item.zipCode"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Date Of Birth</label>
+                                    <input type="text"
+                                           class="form-control datepicker valid"
+                                           name="dateOfBirth"
+                                           ng-model="dashboard.item.birthday"
+                                           data-format="mm/dd/yyyy"
+                                           data-lang="en"
+                                           data-rtl="false"
+                                           aria-invalid="false">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Website Url</label>
+                                    <input type="text"
+                                           name="website"
+                                           ng-model="dashboard.item.websiteUrl"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Preferred Language(s)</label>
+                                    <select type="text"
+                                            name="languages"
+                                            ng-model="dashboard.item.preferredLanguages"
+                                            class="form-control"
+                                            ng-options="language.value as language.name for language in dashboard.languages"
+                                            multiple></select>
+                                </div>
+                                <div class="margiv-top10">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
+                                </div>
+                            </form>*@
+                    </uib-tab>
+                    <!-- /PERSONAL INFO TAB -->
+                    <!-- AVATAR TAB -->
+                    <uib-tab index="1" active="dashboard.avatarTab" id="avatar" heading="Avatar">
+
+                        <form class="clearfix" name="avatarForm" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>
+                                            Upload New Avatar
+                                        </label>
+                                        <!-- custom file upload -->
+                                        <div class="fancy-file-upload fancy-file-primary">
+                                            <i class="fa fa-upload"></i>
+                                            <input id="fileInput" type="file" onchange="angular.element(this).scope().readProfile(this.files[0]); jQuery(this).next('input').val(this.value);">
+                                            <input type="text" class="form-control" placeholder="no file selected" readonly="" />
+                                            <span class="button">Choose File</span>
+                                        </div>
+                                        <small class="text-muted block">Max file size: 10Mb (zip/pdf/jpg/png)</small>
+                                        <div class="row">
+                                            <div ng-if="dashboard.dataUrl" class="img-container col-md-6">
+                                                <div class="box-static margin-top-15">
+                                                    <div class="box-icon-title">
+                                                        <h5 class="margin-bottom-0">Crop</h5>
+                                                    </div>
+                                                    <img ng-if="dashboard.dataUrl"
+                                                         ng-src="{{dashboard.dataUrl}}"
+                                                         width="300"
+                                                         height="300"
+                                                         ng-cropper
+                                                         ng-cropper-proxy="dashboard.cropperProxy"
+                                                         ng-cropper-show="dashboard.showEvent"
+                                                         ng-cropper-hide="dashboard.hideEvent"
+                                                         ng-cropper-options="dashboard.options">
+                                                </div>
+                                            </div>
+                                            <div ng-if="dashboard.preview.dataUrl" class="preview-container col-md-6">
+                                                <div class="box-static margin-top-15">
+                                                    <div class="box-icon-title">
+                                                        <h5 class="margin-bottom-0">Preview</h5>
+                                                    </div>
+                                                    <div class="thumbnail text-center">
+                                                        <img id="filePreviewImage" ng-src="{{dashboard.preview.dataUrl}}" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-md-12">
+                                            <button class="btn btn-default" ng-click="dashboard.preview(); $event.preventDefault();">Crop</button>
+                                            <button class="btn btn-primary" ng-if="dashboard.dataUrl" ng-click="dashboard.upload('Profile'); $event.preventDefault();"><i class="fa fa-upload"></i>Upload</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+
+                    </uib-tab>
+                    <!-- /AVATAR TAB -->
+                    <!-- PASSWORD TAB -->
+                    <uib-tab index="2" id="password" heading="Password">
+                        <password-edit email={{dashboard.item.emailPublic}}></password-edit>
+                        @*<form role="form" name="dashboard.pwForm" ng-submit="dashboard.changePassword()" novalidate>
+
+                                <div class="form-group" ng-class="{'has-error': !dashboard.pwForm.password.$pristine && dashboard.pwForm.password.$invalid}">
+                                    <label for="password">Current Password *</label>
+                                    <input type="password"
+                                           name="password"
+                                           class="form-control"
+                                           placeholder="Current Password"
+                                           ng-model="dashboard.pwInfo.currentPassword"
+                                           ng-pattern="dashboard.pwValidation"
+                                           max-length="32"
+                                           min-length="6"
+                                           required>
+                                    <div role="alert" class="help-inline error">
+                                        <span class="error" ng-show="!dashboard.pwForm.password.$pristine && dashboard.pwForm.password.$error.minlength">Short! Password must be 6 characters or more</span>
+                                        <span class="error" ng-show="!dashboard.pwForm.password.$pristine && dashboard.pwForm.password.$error.maxlength">Too long! Password must be 32 characters or less</span>
+                                        <span class="error" ng-show="!dashboard.pwForm.password.$pristine && dashboard.pwForm.password.$error.pattern">Password needs at least 1 Uppercase, Lowercase, Number, and Special Character</span>
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error': !dashboard.pwForm.newPassword.$pristine && dashboard.pwForm.newPassword.$invalid}">
+                                    <label for="newPassword">New Password *</label>
+                                    <input name="newPassword"
+                                           ng-model="dashboard.pwInfo.newPassword"
+                                           type="password"
+                                           class="form-control"
+                                           placeholder="New Password"
+                                           ng-pattern="dashboard.pwValidation"
+                                           max-length="32"
+                                           min-length="6"
+                                           required>
+                                    <div role="alert" class="help-inline error">
+                                        <span class="error" ng-show="!dashboard.pwForm.newPassword.$pristine && dashboard.pwForm.newPassword.$error.minlength">Short! Password must be 6 characters or more</span>
+                                        <span class="error" ng-show="!dashboard.pwForm.newPassword.$pristine && dashboard.pwForm.newPassword.$error.maxlength">Too long! Password must be 32 characters or less</span>
+                                        <span class="error" ng-show="!dashboard.pwForm.newPassword.$pristine && dashboard.pwForm.newPassword.$error.pattern">Password needs at least 1 Uppercase, Lowercase, Number, and Special Character</span>
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error': !dashboard.pwForm.confirmPassword.$pristine && dashboard.pwForm.confirmPassword.$invalid}">
+                                    <label for="confirmPassword">Confirm password *</label>
+                                    <input name="confirmPassword"
+                                           ng-model="dashboard.pwInfo.confirmPassword"
+                                           type="password"
+                                           class="form-control"
+                                           placeholder="Confirm Password"
+                                           max-length="32"
+                                           min-length="6"
+                                           data-ng-match="dashboard.pwInfo.newPassword"
+                                           required>
+                                    <div role="alert" class="help-inline error">
+                                        <span class="error" ng-show="!dashboard.pwForm.confirmPassword.$pristine && dashboard.pwForm.confirmPassword.$error.minlength">Short! Password must be 6 characters or more</span>
+                                        <span class="error" ng-show="!dashboard.pwForm.confirmPassword.$pristine && dashboard.pwForm.confirmPassword.$error.maxlength">Too long! password must be 32 characters or less</span>
+                                        <span class="error" ng-show="!dashboard.pwForm.confirmPassword.$pristine && dashboard.pwForm.confirmPassword.$error.match">Password must match</span>
+                                    </div>
+                                </div>
+                                <div class="margiv-top10">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
+                                </div>
+                            </form>*@
+                    </uib-tab>
+                    <!-- /PASSWORD TAB -->
+                    <!-- NOTIFICATIONS TAB -->
+                    <uib-tab index="3" heading="Notification Settings">
+
+                        <form name="dashboard.notForm" ng-submit="dashboard.submit('notForm', true)" novalidate>
+                            <div class="sky-form">
+
+                                <table class="table table-bordered table-striped">
+
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Cases</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Invite / Edit </td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.caseInvite.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.caseInvite.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Searches</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Saved Searches New Listings</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.newListingOnSavedSearch.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.newListingOnSavedSearch.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Notes</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.notesAddedToListing.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.notesAddedToListing.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Messages</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>New Message</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.newMessage.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.newMessage.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Expenses</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Reminders</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.expensesReminder.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.expensesReminder.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Transactions</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>People Add/Edit</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.transactionParticipants.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.transactionParticipants.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Documents Add/Edit</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.transactionDocuments.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.transactionDocuments.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Document Reminders</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.transactionDocumentReminders.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.transactionDocumentReminders.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Comments</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.transactionComments.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="dashboard.notif.transactionComments.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="margin-top-10">
+                                <button class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                            </div>
+
+                        </form>
+
+                    </uib-tab>
+                    <!-- /NOTIFICATIONS TAB -->
+                    <!-- AGENTS TAB-->
+                    <uib-tab index="4" active="dashboard.agentTab" heading="Agent Settings" ng-show="dashboard.isAgent || dashboard.isBroker">
+                        <agent-edit person-id={{dashboard.personId}}></agent-edit>
+                        @*<form role="form" name="dashboard.agentForm" ng-submit="dashboard.submit('agentForm', dashboard.agentForm.$valid)" novalidate>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.agentForm.licenseNumber.$invalid && !dashboard.agentForm.licenseNumber.$pristine }">
+                                    <label class="control-label">License #</label>
+                                    <input type="text"
+                                           name="licenseNumber"
+                                           class="form-control"
+                                           ng-model="dashboard.agentSettings.licenseId"
+                                           ng-minlength="8"
+                                           ng-maxlength="8">
+                                    <p ng-show="!dashboard.agentForm.phoneCell.$pristine && dashboard.agentForm.phoneCell.$error.minlength" class="help-block">License # is too short</p>
+                                    <p ng-show="!dashboard.agentForm.phoneCell.$pristine && dashboard.agentForm.phoneCell.$error.maxlength" class="help-block">License # is too long.</p>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.agentForm.lastName.$invalid && !dashboard.agentForm.lastName.$pristine }">
+                                    <label class="control-label">License State</label>
+                                    <select type="text"
+                                            name="licenseState"
+                                            class='form-control'
+                                            ng-model="dashboard.agentSettings.licenseState">
+                                        <option value="AL">Alabama</option>
+                                        <option value="AK">Alaska</option>
+                                        <option value="AZ">Arizona</option>
+                                        <option value="AR">Arkansas</option>
+                                        <option value="CA">California</option>
+                                        <option value="CO">Colorado</option>
+                                        <option value="CT">Connecticut</option>
+                                        <option value="DE">Delaware</option>
+                                        <option value="DC">District Of Columbia</option>
+                                        <option value="FL">Florida</option>
+                                        <option value="GA">Georgia</option>
+                                        <option value="HI">Hawaii</option>
+                                        <option value="ID">Idaho</option>
+                                        <option value="IL">Illinois</option>
+                                        <option value="IN">Indiana</option>
+                                        <option value="IA">Iowa</option>
+                                        <option value="KS">Kansas</option>
+                                        <option value="KY">Kentucky</option>
+                                        <option value="LA">Louisiana</option>
+                                        <option value="ME">Maine</option>
+                                        <option value="MD">Maryland</option>
+                                        <option value="MA">Massachusetts</option>
+                                        <option value="MI">Michigan</option>
+                                        <option value="MN">Minnesota</option>
+                                        <option value="MS">Mississippi</option>
+                                        <option value="MO">Missouri</option>
+                                        <option value="MT">Montana</option>
+                                        <option value="NE">Nebraska</option>
+                                        <option value="NV">Nevada</option>
+                                        <option value="NH">New Hampshire</option>
+                                        <option value="NJ">New Jersey</option>
+                                        <option value="NM">New Mexico</option>
+                                        <option value="NY">New York</option>
+                                        <option value="NC">North Carolina</option>
+                                        <option value="ND">North Dakota</option>
+                                        <option value="OH">Ohio</option>
+                                        <option value="OK">Oklahoma</option>
+                                        <option value="OR">Oregon</option>
+                                        <option value="PA">Pennsylvania</option>
+                                        <option value="RI">Rhode Island</option>
+                                        <option value="SC">South Carolina</option>
+                                        <option value="SD">South Dakota</option>
+                                        <option value="TN">Tennessee</option>
+                                        <option value="TX">Texas</option>
+                                        <option value="UT">Utah</option>
+                                        <option value="VT">Vermont</option>
+                                        <option value="VA">Virginia</option>
+                                        <option value="WA">Washington</option>
+                                        <option value="WV">West Virginia</option>
+                                        <option value="WI">Wisconsin</option>
+                                        <option value="WY">Wyoming</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.agentForm.expirationDate.$invalid && !dashboard.agentForm.expirationDate.$pristine }">
+                                    <label class="control-label">License Expiration Date</label>
+                                    <input type="text"
+                                           name="expirationDate"
+                                           class="form-control datepicker valid"
+                                           ng-model="dashboard.agentSettings.expirationDate"
+                                           data-format="mm/dd/yyyy">
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.agentForm.officeLicense.$invalid && !dashboard.agentForm.officeLicense.$pristine }">
+                                    <label class="control-label">Office License #</label>
+                                    <input type="text"
+                                           name="officeLicense"
+                                           ng-model="dashboard.agentSettings.officeId"
+                                           ng-minlength="8"
+                                           ng-maxlength="8"
+                                           class="form-control">
+                                    <p ng-show="!dashboard.agentForm.officeLicense.$pristine && dashboard.agentForm.officeLicense.$error.minlength" class="help-block">License Number is too short</p>
+                                    <p ng-show="!dashboard.agentForm.officeLicense.$pristine && dashboard.agentForm.officeLicense.$error.maxlength" class="help-block">License Number is too long.</p>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.registerOfficeForm.stateProvinceBusiness.$invalid && !dashboard.serviceProviderForm.stateProvinceBusiness.$pristine }">
+                                    <label class="control-label">MLS Membership</label>
+                                    <select type="text"
+                                            name="MLS Membership"
+                                            class='form-control'
+                                            ng-model="dashboard.agentSettings.mlsShortName"
+                                            ng-options="lookup.shortValue as lookup.longValue for lookup in dashboard.mlsLookup"></select>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.agentForm.mlsId.$invalid && !dashboard.agentForm.mlsId.$pristine }">
+                                    <label class="control-label">MLS ID</label>
+                                    <input type="text"
+                                           name="mlsId"
+                                           ng-model="dashboard.agentSettings.mlsId"
+                                           ng-minlength="3"
+                                           ng-maxlength="15"
+                                           class="form-control">
+                                    <p ng-show="!dashboard.agentForm.mlsId.$pristine && dashboard.agentForm.mlsId.$error.minlength" class="help-block">Phone Number is too short</p>
+                                    <p ng-show="!dashboard.agentForm.mlsId.$pristine && dashboard.agentForm.mlsId.$error.maxlength" class="help-block">Phone Number is too long.</p>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.agentForm.aboutMe.$invalid && !dashboard.agentForm.aboutMe.$pristine }">
+                                    <label class="control-label">About Me</label>
+                                    <textarea ng-model="dashboard.agentSettings.aboutMe"
+                                              class="form-control"
+                                              rows="4"
+                                              ng-minlength="10"
+                                              ng-maxlength="400"></textarea>
+                                    <div role="alert" class="help-inline error">
+                                        <span class="error" ng-show="!dashboard.agentForm.password.$pristine && dashboard.agentForm.password.$error.minlength">About Me must be 10 characters or more</span>
+                                        <span class="error" ng-show="!dashboard.agentForm.password.$pristine && dashboard.agentForm.password.$error.maxlength">About Me must be 400 characters or less</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Standard Commission</label>
+                                    <input type="text"
+                                           name="standardCommission"
+                                           ng-model="dashboard.agentSettings.defaultCommission"
+                                           percentage-field
+                                           percentage-max-decimals="2"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Broker's Cut</label>
+                                    <input type="text"
+                                           name="brokersCut"
+                                           ng-model="dashboard.agentSettings.brokersCut"
+                                           percentage-field
+                                           percentage-max-decimals="2"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Upload Personal Banner</label>
+                                    <div class="fancy-file-upload fancy-file-primary">
+                                        <i class="fa fa-upload"></i>
+                                        <input id="fileInput" type="file" onchange="angular.element(this).scope().readBanner(this.files[0]); jQuery(this).next('input').val(this.value);">
+                                        <input type="text" class="form-control" placeholder="no file selected" readonly="" />
+                                        <span class="button">Choose File</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Upload Company Logo</label>
+                                    <div class="fancy-file-upload fancy-file-primary">
+                                        <i class="fa fa-upload"></i>
+                                        <input id="fileInput" type="file" onchange="angular.element(this).scope().readLogo(this.files[0]); jQuery(this).next('input').val(this.value);">
+                                        <input type="text" class="form-control" placeholder="no file selected" readonly="" />
+                                        <span class="button">Choose File</span>
+                                    </div>
+                                </div>
+                                <div class="margiv-top10">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
+                                </div>
+                            </form>*@
+                        <div class="row">
+                            <div ng-if="dashboard.bannerUrl" class="col-md-10 col-lg-10 col-sm-10">
+                                <div class="box-static margin-top-15" style="display:table-cell; vertical-align:middle; text-align:center;">
+                                    <div class="box-icon-title">
+                                        <h5 class="margin-bottom-0 text-center">Banner Preview</h5>
+                                    </div>
+                                    <img ng-if="dashboard.bannerUrl"
+                                         ng-src="{{dashboard.bannerUrl}}"
+                                         width="500"
+                                         height="300" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div ng-if="dashboard.logoUrl" class="col-md-10 col-lg-10 col-sm-10">
+                                <div class="box-static margin-top-15" style="display:table-cell; vertical-align:middle; text-align:center;">
+                                    <div class="box-icon-title">
+                                        <h5 class="margin-bottom-0 text-center">Logo Preview</h5>
+                                    </div>
+                                    <img ng-if="dashboard.logoUrl"
+                                         ng-src="{{dashboard.logoUrl}}"
+                                         width="300"
+                                         height="300" />
+                                </div>
+                            </div>
+                        </div>
+                    </uib-tab>
+                    <!-- /AGENTS TAB-->
+                    <!-- SERVICE PROVDER TAB-->
+                    <uib-tab index="5"
+                             active="dashboard.serviceProviderTab"
+                             heading="Service Provider Information"
+                             ng-show="(dashboard.serviceProviderTab || dashboard.item.roles.length > 0) && !dashboard.isBroker && !dashboard.isAgent">
+                        <resource-edit person="{{dashboard.item}}"></resource-edit>
+                        @*<form role="form" name="dashboard.serviceProviderForm" ng-submit="dashboard.submit('serviceProvider', dashboard.serviceProviderForm.$valid)" novalidate>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.serviceProviderForm.stateProvinceBusiness.$invalid && !dashboard.serviceProviderForm.stateProvinceBusiness.$pristine }">
+                                    <label class="control-label">Type Of Service</label>
+                                    <select type="text"
+                                            name="stateProvinceBusiness"
+                                            class='form-control'
+                                            ng-model="dashboard.item.roles"
+                                            ng-options="role.id as role.name for role in dashboard.roles"
+                                            multiple></select>
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.serviceProviderForm.companyName.$invalid && !dashboard.serviceProviderForm.companyName.$pristine }">
+                                    <label class="control-label">Company Name</label>
+                                    <input type="text"
+                                           name="companyName"
+                                           class="form-control"
+                                           ng-model="dashboard.serviceProvider.companyName"
+                                           ng-minlength="2"
+                                           ng-maxlength="128">
+                                    <p ng-show="!dashboard.serviceProviderForm.companyName.$pristine && dashboard.serviceProviderForm.companyName.$error.minlength" class="help-block">Company Name is too short</p>
+                                    <p ng-show="!dashboard.serviceProviderForm.companyName.$pristine && dashboard.serviceProviderForm.companyName.$error.maxlength" class="help-block">Company Name is too long.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Address 1</label>
+                                    <input type="text"
+                                           name="address1"
+                                           ng-model="dashboard.serviceProvider.address1"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Address 2</label>
+                                    <input type="text"
+                                           name="address2"
+                                           ng-model="dashboard.serviceProvider.address2"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">City</label>
+                                    <input type="text"
+                                           name="city"
+                                           ng-model="dashboard.serviceProvider.city"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : dashboard.serviceProviderForm.stateProvinceBusiness.$invalid && !dashboard.serviceProviderForm.stateProvinceBusiness.$pristine }">
+                                    <label class="control-label">State</label>
+                                    <select type="text"
+                                            name="stateProvinceBusiness"
+                                            class='form-control'
+                                            ng-model="dashboard.serviceProvider.stateProvince">
+                                        <option value="AL">Alabama</option>
+                                        <option value="AK">Alaska</option>
+                                        <option value="AZ">Arizona</option>
+                                        <option value="AR">Arkansas</option>
+                                        <option value="CA">California</option>
+                                        <option value="CO">Colorado</option>
+                                        <option value="CT">Connecticut</option>
+                                        <option value="DE">Delaware</option>
+                                        <option value="DC">District Of Columbia</option>
+                                        <option value="FL">Florida</option>
+                                        <option value="GA">Georgia</option>
+                                        <option value="HI">Hawaii</option>
+                                        <option value="ID">Idaho</option>
+                                        <option value="IL">Illinois</option>
+                                        <option value="IN">Indiana</option>
+                                        <option value="IA">Iowa</option>
+                                        <option value="KS">Kansas</option>
+                                        <option value="KY">Kentucky</option>
+                                        <option value="LA">Louisiana</option>
+                                        <option value="ME">Maine</option>
+                                        <option value="MD">Maryland</option>
+                                        <option value="MA">Massachusetts</option>
+                                        <option value="MI">Michigan</option>
+                                        <option value="MN">Minnesota</option>
+                                        <option value="MS">Mississippi</option>
+                                        <option value="MO">Missouri</option>
+                                        <option value="MT">Montana</option>
+                                        <option value="NE">Nebraska</option>
+                                        <option value="NV">Nevada</option>
+                                        <option value="NH">New Hampshire</option>
+                                        <option value="NJ">New Jersey</option>
+                                        <option value="NM">New Mexico</option>
+                                        <option value="NY">New York</option>
+                                        <option value="NC">North Carolina</option>
+                                        <option value="ND">North Dakota</option>
+                                        <option value="OH">Ohio</option>
+                                        <option value="OK">Oklahoma</option>
+                                        <option value="OR">Oregon</option>
+                                        <option value="PA">Pennsylvania</option>
+                                        <option value="RI">Rhode Island</option>
+                                        <option value="SC">South Carolina</option>
+                                        <option value="SD">South Dakota</option>
+                                        <option value="TN">Tennessee</option>
+                                        <option value="TX">Texas</option>
+                                        <option value="UT">Utah</option>
+                                        <option value="VT">Vermont</option>
+                                        <option value="VA">Virginia</option>
+                                        <option value="WA">Washington</option>
+                                        <option value="WV">West Virginia</option>
+                                        <option value="WI">Wisconsin</option>
+                                        <option value="WY">Wyoming</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Zip Code</label>
+                                    <input type="text"
+                                           name="zipCode"
+                                           ng-model="dashboard.serviceProvider.zipCode"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group" ng-class="{'has-error' : userForm.phoneWork.$invalid && !userForm.phoneWork.$pristine }">
+                                    <label class="control-label">Phone Number</label>
+                                    <input type="text"
+                                           name="phoneWork"
+                                           ng-model="dashboard.serviceProvider.phoneWork"
+                                           ng-minlength="10"
+                                           ng-maxlength="10"
+                                           class="form-control input-phone"
+                                           phone-input>
+                                    <p ng-show="dashboard.userForm.phoneWork.$error.minlength" class="help-block">Phone Number is too short</p>
+                                    <p ng-show="dashboard.userForm.phoneWork.$error.maxlength" class="help-block">Phone Number is too long.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Website Url</label>
+                                    <input type="text"
+                                           name="website"
+                                           ng-model="dashboard.serviceProvider.website"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Upload Company Logo</label>
+                                    <div class="fancy-file-upload fancy-file-primary">
+                                        <i class="fa fa-upload"></i>
+                                        <input id="fileInput" type="file" onchange="angular.element(this).scope().readLogo(this.files[0]); jQuery(this).next('input').val(this.value);">
+                                        <input type="text" class="form-control" placeholder="no file selected" readonly="" />
+                                        <span class="button">Choose File</span>
+                                    </div>
+                                </div>
+                                <div class="margiv-top10">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
+                                </div>
+                            </form>
+                            <div class="row">
+                                <div ng-if="dashboard.logoUrl" class="col-md-10 col-lg-10 col-sm-10">
+                                    <div class="box-static margin-top-15" style="display:table-cell; vertical-align:middle; text-align:center;">
+                                        <div class="box-icon-title">
+                                            <h5 class="margin-bottom-0 text-center">Logo Preview</h5>
+                                        </div>
+                                        <img ng-if="dashboard.logoUrl"
+                                             ng-src="{{dashboard.logoUrl}}"
+                                             width="300"
+                                             height="300" />
+                                    </div>
+                                </div>
+                            </div>*@
+                    </uib-tab>
+                    <!-- /SERVICE PROVDER TAB-->
+                    <!-- REGISTER OFFICE TAB-->
+                    <uib-tab index="5"
+                             active="dashboard.registerOfficeTab"
+                             heading="Office Information"
+                             ng-show="dashboard.registerOfficeTab || dashboard.agentSettings.registeredOffice">
+                        <form role="form" name="dashboard.officeForm" ng-submit="dashboard.submit('officeForm', dashboard.serviceProviderForm.$valid)" novalidate>
+                            <div class="form-group" ng-class="{'has-error' : dashboard.officeForm.companyName.$invalid && !dashboard.officeForm.companyName.$pristine }">
+                                <label class="control-label">Office License Number</label>
+                                <input type="text"
+                                       name="companyName"
+                                       class="form-control"
+                                       ng-model="dashboard.office.officeId"
+                                       ng-minlength="2"
+                                       ng-maxlength="128">
+                                <p ng-show="!dashboard.officeForm.companyName.$pristine && dashboard.officeFormForm.companyName.$error.minlength" class="help-block">Company Name is too short</p>
+                                <p ng-show="!dashboard.officeFormForm.companyName.$pristine && dashboard.officeFormForm.companyName.$error.maxlength" class="help-block">Company Name is too long.</p>
+                            </div>
+                            <div class="form-group" ng-class="{'has-error' : dashboard.officeForm.expirationDate.$invalid && !dashboard.officeForm.expirationDate.$pristine }">
+                                <label class="control-label">License Expiration Date</label>
+                                <input type="text"
+                                       name="expirationDate"
+                                       class="form-control datepicker valid"
+                                       ng-model="dashboard.office.expirationDate"
+                                       data-format="mm/dd/yyyy">
+                            </div>
+                            <div class="form-group" ng-class="{'has-error' : dashboard.officeForm.companyName.$invalid && !dashboard.officeForm.companyName.$pristine }">
+                                <label class="control-label">Office MLS ID</label>
+                                <input type="text"
+                                       name="companyName"
+                                       class="form-control"
+                                       ng-model="dashboard.office.officeMlsId"
+                                       ng-minlength="2"
+                                       ng-maxlength="128">
+                                <p ng-show="!dashboard.officeForm.companyName.$pristine && dashboard.officeFormForm.companyName.$error.minlength" class="help-block">Company Name is too short</p>
+                                <p ng-show="!dashboard.officeForm.companyName.$pristine && dashboard.officeFormForm.companyName.$error.maxlength" class="help-block">Company Name is too long.</p>
+                            </div>
+                            <div class="form-group" ng-class="{'has-error' : dashboard.officeForm.companyName.$invalid && !dashboard.officeForm.companyName.$pristine }">
+                                <label class="control-label">Company Name</label>
+                                <input type="text"
+                                       name="companyName"
+                                       class="form-control"
+                                       ng-model="dashboard.office.officeName"
+                                       ng-minlength="2"
+                                       ng-maxlength="128">
+                                <p ng-show="!dashboard.officeForm.companyName.$pristine && dashboard.officeForm.companyName.$error.minlength" class="help-block">Company Name is too short</p>
+                                <p ng-show="!dashboard.officeForm.companyName.$pristine && dashboard.officeForm.companyName.$error.maxlength" class="help-block">Company Name is too long.</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Address 1</label>
+                                <input type="text"
+                                       name="address1"
+                                       ng-model="dashboard.office.address1"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Address 2</label>
+                                <input type="text"
+                                       name="address2"
+                                       ng-model="dashboard.office.address2"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">City</label>
+                                <input type="text"
+                                       name="city"
+                                       ng-model="dashboard.office.city"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group" ng-class="{'has-error' : dashboard.officeForm.stateProvinceBusiness.$invalid && !dashboard.serviceProviderForm.stateProvinceBusiness.$pristine }">
+                                <label class="control-label">State</label>
+                                <select type="text"
+                                        name="stateProvinceBusiness"
+                                        class='form-control'
+                                        ng-model="dashboard.office.licenseState">
+                                    <option value="AL">Alabama</option>
+                                    <option value="AK">Alaska</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="DC">District Of Columbia</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NY">New York</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WY">Wyoming</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Zip Code</label>
+                                <input type="text"
+                                       name="zipCode"
+                                       ng-model="dashboard.office.zipCode"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group" ng-class="{'has-error' : dashboard.officeForm.phoneWork.$invalid && !dashboard.officeForm.phoneWork.$pristine }">
+                                <label class="control-label">Phone Number</label>
+                                <input type="text"
+                                       name="phoneWork"
+                                       ng-model="dashboard.office.phoneNumber"
+                                       ng-minlength="10"
+                                       ng-maxlength="10"
+                                       class="form-control input-phone"
+                                       phone-input>
+                                <p ng-show="dashboard.officeForm.phoneWork.$error.minlength" class="help-block">Phone Number is too short</p>
+                                <p ng-show="dashboard.officeForm.phoneWork.$error.maxlength" class="help-block">Phone Number is too long.</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Website Url</label>
+                                <input type="text"
+                                       name="website"
+                                       ng-model="dashboard.office.websiteUrl"
+                                       class="form-control">
+                            </div>
+                            <div class="margiv-top10">
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Save</button>
+                            </div>
+                        </form>
+                    </uib-tab>
+                    <!-- /REGISTER OFFICE TAB-->
+                </uib-tabset>
+            </div>
+
+
+
+            <!-- LEFT -->
+            <div class="col-lg-3 col-md-3 col-sm-4 col-lg-pull-9 col-md-pull-9 col-sm-pull-8 margin-top-20">
+
+                <div class="thumbnail text-center wrapper">
+
+                    <img id="profile" ng-src="{{dashboard.profilePicture}}" ng-click="dashboard.show('avatarTab')" alt="profile picture">
+                    <div class="title" ng-click="dashboard.show('avatarTab')"><span>Click to Change Picture</span></div>
+
+                    <h2 class="size-18 margin-top-10 margin-bottom-0">{{dashboard.item.firstName}} {{dashboard.item.lastName}}</h2>
+                </div>
+                <div class="thumbnail text-center wrapper" ng-if="dashboard.item.roles.length > 0 && !dashboard.isBroker && !dashboard.isAgent">
+
+                    <img id="profile" ng-src="{{dashboard.logoUrl}}" ng-click="dashboard.show('serviceProvider')" alt="company logo picture">
+                    <div class="title" ng-click="dashboard.show('serviceProvider')"><span>Click to Change Logo</span></div>
+
+                    <h2 class="size-18 margin-top-10 margin-bottom-0">{{dashboard.serviceProvider.companyName}}</h2>
+                </div>
+                <div class="thumbnail text-center wrapper" ng-if="(dashboard.isBroker || dashboard.isAgent) && dashboard.agent.logoUrl">
+
+                    <img id="profile" ng-src="{{dashboard.agent.logoUrl}}" ng-click="dashboard.show('agentTab')" alt="company logo picture">
+                    <div class="title" ng-click="dashboard.show('agentTab')"><span>Click to Change Logo</span></div>
+
+                    <h2 class="size-18 margin-top-10 margin-bottom-0">{{dashboard.item.companyName}}</h2>
+                </div>
+                <div class="box-light margin-bottom-30" ng-hide="dashboard.isAgent || dashboard.isBroker || dashboard.item.roles.length > 0">
+                    <!-- .box-light OR .box-light -->
+                    <div class="row margin-bottom-20">
+                        <div class="text-center">
+                            <a href="" ng-click="dashboard.show('serviceProvider')">Are you a Service Provider? <br />Click here to Register</a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="box-light margin-bottom-30" ng-show="dashboard.isBroker && dashboard.agentSettings.isOfficer && !dashboard.agentSettings.registeredOffice">
+                    <!-- .box-light OR .box-light -->
+                    <div class="row margin-bottom-20">
+                        <div class="text-center">
+                            <a href="" ng-click="dashboard.show('registerOffice')">Would you like to register your Office?<br />Click here to Register</a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+
+@section pageInitScripts{
+    <script src="~/Scripts/sabio.module.ngCropper.js"></script>
+
+}
+
+@section scripts
+{
+
+    <script src="~/Scripts/app/personProfileEdit/profileEdit.controller.js"></script>
+    <script src="~/Scripts/sabio.services.person.js"></script>k
+    <script src="~/Scripts/app/directives/profileEdit.directive.js"></script>
+    <script src="~/Scripts/sabio.services.case.js"></script>
+    <script src="~/Scripts/sabio.services.roles.js"></script>
+    <script src="~/Scripts/sabio.services.toDos.js"></script>
+    <script src="~/Scripts/sabio.services.user.js"></script>
+    <script src="~/Scripts/sabio.services.mlscategories.js"></script>
+    <script src="~/Scripts/sabio.services.uploadFile.js"></script>
+    <script src="~/Scripts/ng/ngCropper.all.min.js"></script>
+    <script src="~/Scripts/app/directives/phoneInput.js"></script>
+    <script src="~/Scripts/app/directives/percentage.js"></script>
+    <script src="~/Scripts/app/services/upload.js"></script>
+    <script src="~/Scripts/app/services/role.js"></script>
+    <script src="~/Scripts/app/services/office.js"></script>
+    <script src="~/Scripts/app/services/license.js"></script>
+    <script src="~/Scripts/app/services/notification.js"></script>
+    <script src="~/Scripts/app/services/people.js"></script>
+    <script src="~/Scripts/app/services/mlsCategories.js"></script>
+    <script src="~/Scripts/app/services/user.js"></script>
+    <script src="~/Scripts/app/directives/ngMatch.js"></script>
+    <script src="~/Scripts/app/services/case.js"></script>
+    <script src="~/Scripts/app/services/toDos.js"></script>
+    <script src="~/Scripts/app/directives/passwordEdit.directive.js"></script>
+    <script src="~/Scripts/app/directives/resourceEdit.directive.js"></script>
+    <script src="~/Scripts/app/directives/agentEdit.directive.js"></script>
+    <script src="~/Scripts/app/personProfileEdit/agentEdit.controller.js"></script>
+    <script src="~/Scripts/app/personProfileEdit/passwordEdit.controller.js"></script>
+    <script src="~/Scripts/app/personProfileEdit/resourceEdit.controller.js"></script>
+    <script src="~/Scripts/app/personProfileEdit/profile.controller.js"></script>
+    <script src="~/Scripts/app/filters/telephone.filter.js"></script>
+    <script type="text/javascript">
+        sabio.page.currentUser = @Html.RawJson(Model.CurrentUser.FullName);
+        sabio.page.currentPersonId= @Html.RawJson(Model.CurrentUserId);
+        sabio.page.currentUserAvatar = @Html.RawJson(Model.CurrentUserAvatar);
+        sabio.page.isAgent = @Html.RawJson(Model.IsAgent);
+        sabio.page.isBroker = @Html.RawJson(Model.IsBroker);
+        sabio.page.baseUrl = '@(System.Configuration.ConfigurationManager.AppSettings["AWSBaseUrl"].ToString())';
+        sabio.page.bucket = '@(System.Configuration.ConfigurationManager.AppSettings["AWSBucket"].ToString())';
+        sabio.page.folder = '@(System.Configuration.ConfigurationManager.AppSettings["AWSFolder"].ToString())';
+    </script>
+
+}
+
+
