@@ -1,0 +1,412 @@
+@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Views/Shared/_LayoutSmarty.cshtml";
+}
+
+<base href="/" />
+<link href="~/Content/ngCropper.all.css" rel="stylesheet" />
+
+<style>
+    .img-container {
+        max-width: 300px;
+    }
+
+
+    .title {
+        opacity: 0;
+        transition: opacity .5s ease-in;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0,0,0,.5);
+        position: relative;
+        top: 0;
+        text-align: center;
+        display: table;
+    }
+
+        .title span {
+            display: table-cell;
+            vertical-align: bottom;
+            height: 100%;
+            width: 100%;
+        }
+
+    .thumbnail:hover .title {
+        opacity: 1;
+    }
+</style>
+
+<div class="container" ng-controller="profileController as profile">
+    <section class="page-header page-header-xs">
+        <div class="container">
+
+            <!-- breadcrumbs -->
+            <ol class="breadcrumb breadcrumb-inverse">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Pages</a></li>
+                <li class="active">{{profile.item.firstName}} {{profile.item.lastName}}</li>
+            </ol><!-- /breadcrumbs -->
+
+        </div>
+    </section>
+    <section>
+        <div class="container">
+
+            <!-- RIGHT -->
+            <div class="col-lg-9 col-md-9 col-sm-8 col-lg-push-3 col-md-push-3 col-sm-push-4 margin-bottom-80">
+
+                <uib-tabset class="tab-content margin-top-20">
+
+                    <!-- PERSONAL INFO TAB -->
+                    <uib-tab index="0" id="info" heading="Personal Info">
+                        <profile-edit person-id={{profile.personId}}></profile-edit>
+                    </uib-tab>
+                    <!-- /PERSONAL INFO TAB -->
+                    <!-- AVATAR TAB -->
+                    <uib-tab index="1" active="profile.avatarTab" id="avatar" heading="Avatar">
+                        <form class="clearfix" name="avatarForm" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>
+                                            Upload New Avatar
+                                        </label>
+                                        <!-- custom file upload -->
+                                        <div class="fancy-file-upload fancy-file-primary">
+                                            <i class="fa fa-upload"></i>
+                                            <input id="fileInput" type="file" onchange="angular.element(this).scope().readProfile(this.files[0]); jQuery(this).next('input').val(this.value);">
+                                            <input type="text" class="form-control" placeholder="no file selected" readonly="" />
+                                            <span class="button">Choose File</span>
+                                        </div>
+                                        <small class="text-muted block">Max file size: 10Mb (zip/pdf/jpg/png)</small>
+                                        <div class="row">
+                                            <div ng-if="profile.dataUrl" class="img-container col-md-6">
+                                                <div class="box-static margin-top-15">
+                                                    <div class="box-icon-title">
+                                                        <h5 class="margin-bottom-0">Crop</h5>
+                                                    </div>
+                                                    <img ng-if="profile.dataUrl"
+                                                         ng-src="{{profile.dataUrl}}"
+                                                         width="300"
+                                                         height="300"
+                                                         ng-cropper
+                                                         ng-cropper-proxy="profile.cropperProxy"
+                                                         ng-cropper-show="profile.showEvent"
+                                                         ng-cropper-hide="profile.hideEvent"
+                                                         ng-cropper-options="profile.options">
+                                                </div>
+                                            </div>
+                                            <div ng-if="profile.preview.dataUrl" class="preview-container col-md-6">
+                                                <div class="box-static margin-top-15">
+                                                    <div class="box-icon-title">
+                                                        <h5 class="margin-bottom-0">Preview</h5>
+                                                    </div>
+                                                    <div class="thumbnail text-center">
+                                                        <img id="filePreviewImage" ng-src="{{profile.preview.dataUrl}}" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group col-md-12">
+                                            <button class="btn btn-default" ng-click="profile.preview(); $event.preventDefault();">Crop</button>
+                                            <button class="btn btn-primary" ng-if="profile.dataUrl" ng-click="profile.upload('Profile'); $event.preventDefault();"><i class="fa fa-upload"></i>Upload</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+
+                    </uib-tab>
+                    <!-- /AVATAR TAB -->
+                    <!-- PASSWORD TAB -->
+                    <uib-tab index="2" id="password" heading="Password">
+                        <password-edit email={{profile.item.emailPublic}}></password-edit>
+                    </uib-tab>
+                    <!-- /PASSWORD TAB -->
+                    <!-- NOTIFICATIONS TAB -->
+                    <uib-tab index="3" heading="Notification Settings">
+
+                        <form name="profile.notForm" ng-submit="profile.submit('notForm', true)" novalidate>
+                            <div class="sky-form">
+
+                                <table class="table table-bordered table-striped">
+
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Cases</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Invite / Edit </td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.caseInvite.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.caseInvite.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Searches</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Saved Searches New Listings</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.newListingOnSavedSearch.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.newListingOnSavedSearch.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Notes</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.notesAddedToListing.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.notesAddedToListing.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Messages</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>New Message</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.newMessage.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.newMessage.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Expenses</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Reminders</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.expensesReminder.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.expensesReminder.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Transactions</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>People Add/Edit</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.transactionParticipants.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.transactionParticipants.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Documents Add/Edit</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.transactionDocuments.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.transactionDocuments.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Document Reminders</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.transactionDocumentReminders.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.transactionDocumentReminders.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Comments</td>
+                                            <td>
+                                                <div class="inline-group">
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.transactionComments.emailNotif"><i></i> E-Mail
+                                                    </label>
+                                                    <label class="checkbox nomargin-top nomargin-bottom">
+                                                        <input type="checkbox" ng-model="profile.notif.transactionComments.smsNotif"><i></i> SMS
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="margin-top-10">
+                                <button class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                            </div>
+
+                        </form>
+
+                    </uib-tab>
+                    <!-- /NOTIFICATIONS TAB -->
+                    <!-- AGENTS TAB-->
+                    <uib-tab index="4" active="profile.agentTab" heading="Agent Settings" ng-show="profile.isAgent || profile.isBroker">
+                        <agent-edit person-id={{profile.personId}}></agent-edit>
+                    </uib-tab>
+                    <!-- /AGENTS TAB-->
+                    <!-- SERVICE PROVDER TAB-->
+                    <uib-tab index="5"
+                             active="profile.serviceProviderTab"
+                             heading="Service Provider Information"
+                             ng-show="(profile.serviceProviderTab || profile.item.roles.length > 0) && !profile.isBroker && !profile.isAgent">
+                        <resource-edit person="{{profile.item}}"></resource-edit>
+                    </uib-tab>
+                    <!-- /SERVICE PROVDER TAB-->
+                    <!-- REGISTER OFFICE TAB-->
+                    <uib-tab index="5"
+                             active="profile.registerOfficeTab"
+                             heading="Office Information"
+                             ng-show="profile.registerOfficeTab || profile.agentSettings.registeredOffice">
+                        <office-edit office-id="{{profile.officeId}}"></office-edit>
+                    </uib-tab>
+                    <!-- /REGISTER OFFICE TAB-->
+                </uib-tabset>
+            </div>
+
+
+
+            <!-- LEFT -->
+            <div class="col-lg-3 col-md-3 col-sm-4 col-lg-pull-9 col-md-pull-9 col-sm-pull-8 margin-top-20">
+
+                <div class="thumbnail text-center wrapper">
+
+                    <img id="profile" ng-src="{{profile.profilePicture}}" ng-click="profile.show('avatarTab')" alt="profile picture">
+                    <div class="title" ng-click="profile.show('avatarTab')"><span>Click to Change Picture</span></div>
+
+                    <h2 class="size-18 margin-top-10 margin-bottom-0">{{profile.item.firstName}} {{profile.item.lastName}}</h2>
+                </div>
+                <div class="thumbnail text-center wrapper" ng-if="profile.item.roles.length > 0 && !profile.isBroker && !profile.isAgent">
+
+                    <img id="profile" ng-src="{{profile.logoUrl}}" ng-click="profile.show('serviceProvider')" alt="company logo picture">
+                    <div class="title" ng-click="profile.show('serviceProvider')"><span>Click to Change Logo</span></div>
+
+                    <h2 class="size-18 margin-top-10 margin-bottom-0">{{profile.serviceProvider.companyName}}</h2>
+                </div>
+                <div class="thumbnail text-center wrapper" ng-if="(profile.isBroker || profile.isAgent) && profile.agent.logoUrl">
+
+                    <img id="profile" ng-src="{{profile.agent.logoUrl}}" ng-click="profile.show('agentTab')" alt="company logo picture">
+                    <div class="title" ng-click="profile.show('agentTab')"><span>Click to Change Logo</span></div>
+
+                    <h2 class="size-18 margin-top-10 margin-bottom-0">{{profile.item.companyName}}</h2>
+                </div>
+                <div class="box-light margin-bottom-30" ng-hide="profile.isAgent || profile.isBroker || profile.item.roles.length > 0">
+                    <!-- .box-light OR .box-light -->
+                    <div class="row margin-bottom-20">
+                        <div class="text-center">
+                            <a href="" ng-click="profile.show('serviceProvider')">Are you a Service Provider? <br />Click here to Register</a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="box-light margin-bottom-30" ng-show="profile.isBroker && profile.agentSettings.isOfficer && !profile.agentSettings.registeredOffice">
+                    <!-- .box-light OR .box-light -->
+                    <div class="row margin-bottom-20">
+                        <div class="text-center">
+                            <a href="" ng-click="profile.show('registerOffice')">Would you like to register your Office?<br />Click here to Register</a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+
+@section pageInitScripts{
+    <script src="~/Scripts/sabio.module.ngCropper.js"></script>
+}
+
+@section scripts
+{
+
+    <script src="~/Scripts/app/personProfileEdit/profileEdit.controller.js"></script>
+    <script src="~/Scripts/sabio.services.person.js"></script>k
+    <script src="~/Scripts/app/directives/profileEdit.directive.js"></script>
+    <script src="~/Scripts/sabio.services.case.js"></script>
+    <script src="~/Scripts/sabio.services.roles.js"></script>
+    <script src="~/Scripts/sabio.services.toDos.js"></script>
+    <script src="~/Scripts/sabio.services.user.js"></script>
+    <script src="~/Scripts/sabio.services.mlscategories.js"></script>
+    <script src="~/Scripts/sabio.services.uploadFile.js"></script>
+    <script src="~/Scripts/ng/ngCropper.all.min.js"></script>
+    <script src="~/Scripts/app/directives/phoneInput.js"></script>
+    <script src="~/Scripts/app/directives/percentage.js"></script>
+    <script src="~/Scripts/app/services/upload.js"></script>
+    <script src="~/Scripts/app/services/role.js"></script>
+    <script src="~/Scripts/app/services/office.js"></script>
+    <script src="~/Scripts/app/services/license.js"></script>
+    <script src="~/Scripts/app/services/notification.js"></script>
+    <script src="~/Scripts/app/services/people.js"></script>
+    <script src="~/Scripts/app/services/mlsCategories.js"></script>
+    <script src="~/Scripts/app/services/user.js"></script>
+    <script src="~/Scripts/app/directives/ngMatch.js"></script>
+    <script src="~/Scripts/app/services/case.js"></script>
+    <script src="~/Scripts/app/services/toDos.js"></script>
+    <script src="~/Scripts/app/directives/officeEdit.directive.js"></script>
+    <script src="~/Scripts/app/directives/passwordEdit.directive.js"></script>
+    <script src="~/Scripts/app/directives/resourceEdit.directive.js"></script>
+    <script src="~/Scripts/app/directives/agentEdit.directive.js"></script>
+    <script src="~/Scripts/app/personProfileEdit/officeEdit.controller.js"></script>
+    <script src="~/Scripts/app/personProfileEdit/agentEdit.controller.js"></script>
+    <script src="~/Scripts/app/personProfileEdit/passwordEdit.controller.js"></script>
+    <script src="~/Scripts/app/personProfileEdit/resourceEdit.controller.js"></script>
+    <script src="~/Scripts/app/personProfileEdit/profile.controller.js"></script>
+    <script src="~/Scripts/app/filters/telephone.filter.js"></script>
+    <script type="text/javascript">
+        sabio.page.currentUser = @Html.RawJson(Model.CurrentUser.FullName);
+        sabio.page.currentPersonId= @Html.RawJson(Model.CurrentUserId);
+        sabio.page.currentUserAvatar = @Html.RawJson(Model.CurrentUserAvatar);
+        sabio.page.isAgent = @Html.RawJson(Model.IsAgent);
+        sabio.page.isBroker = @Html.RawJson(Model.IsBroker);
+        sabio.page.baseUrl = '@(System.Configuration.ConfigurationManager.AppSettings["AWSBaseUrl"].ToString())';
+        sabio.page.bucket = '@(System.Configuration.ConfigurationManager.AppSettings["AWSBucket"].ToString())';
+        sabio.page.folder = '@(System.Configuration.ConfigurationManager.AppSettings["AWSFolder"].ToString())';
+    </script>
+
+}
